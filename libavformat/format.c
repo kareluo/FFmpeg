@@ -267,7 +267,6 @@ int av_probe_input_buffer2(AVIOContext *pb, AVInputFormat **fmt,
                           const char *filename, void *logctx,
                           unsigned int offset, unsigned int max_probe_size)
 {
-    av_log(logctx, AV_LOG_FATAL,"Felix: av_probe_input_buffer2: filename=%s, offset=%d, max_probe_size=%d", filename, offset, max_probe_size);
     AVProbeData pd = { filename ? filename : "" };
     uint8_t *buf = NULL;
     int ret = 0, probe_size, buf_offset = 0;
@@ -351,25 +350,7 @@ int av_probe_input_buffer2(AVIOContext *pb, AVInputFormat **fmt,
             fprintf(f, "probe_size:%d format:%s score:%d filename:%s\n", probe_size, (*fmt)->name, score, filename);
             fclose(f);
 #endif
-        } else {
-             int i=0;
-             for(i=0; i<160; i++) {
-                 buf[i] = ~buf[i];
-             }
-             avio_seek(pb, 0, SEEK_CUR);
-             avio_write(pb, buf, 160);
-             av_log(logctx, AV_LOG_FATAL,"Felix: offset=%d", offset);
-             *fmt = av_probe_input_format2(&pd, 1, &score);
-             if (score <= AVPROBE_SCORE_RETRY) {
-                 av_log(logctx, AV_LOG_WARNING,
-                        "Format %s detected only with low score of %d, "
-                        "misdetection possible!\n", (*fmt)->name, score);
-             } else {
-                 av_log(logctx, AV_LOG_DEBUG,
-                        "Format %s probed with size=%d and score=%d\n",
-                        (*fmt)->name, probe_size, score);
-             }
-         }
+        }
     }
 
     if (!*fmt)
