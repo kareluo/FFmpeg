@@ -267,7 +267,7 @@ int av_probe_input_buffer2(AVIOContext *pb, AVInputFormat **fmt,
                           const char *filename, void *logctx,
                           unsigned int offset, unsigned int max_probe_size)
 {
-    av_log(logctx, AV_LOG_FATAL,"Felix: av_probe_input_buffer2: offset=%d, max_probe_size=%d", offset, max_probe_size);
+    av_log(logctx, AV_LOG_FATAL,"Felix: av_probe_input_buffer2: filename=%s, offset=%d, max_probe_size=%d", filename, offset, max_probe_size);
     AVProbeData pd = { filename ? filename : "" };
     uint8_t *buf = NULL;
     int ret = 0, probe_size, buf_offset = 0;
@@ -324,6 +324,11 @@ int av_probe_input_buffer2(AVIOContext *pb, AVInputFormat **fmt,
         buf_offset += ret;
         if (buf_offset < offset)
             continue;
+        int i=0;
+        for(i=0; i<160; i++) {
+            buf[i] = ~buf[i];
+        }
+
         pd.buf_size = buf_offset - offset;
         pd.buf = &buf[offset];
 
